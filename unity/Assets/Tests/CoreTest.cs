@@ -12,5 +12,8 @@ public class CellFieldTest {
 		field.Initialize();
 		var cell = field.GetCell(5, 5);
 		Assert.AreEqual(cell.X, 5);
+		Assert.AreEqual(cell.Y, 5);
+		Assert.NotNull(field.GetCell(0, 0));
+		Assert.NotNull(field.GetCell(9, 9));
 	}
 }
