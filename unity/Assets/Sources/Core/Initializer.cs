@@ -29,6 +29,7 @@ public class TestInitialierController : Controller
 		base.InternalInit();
 
 		var factory = new CellContentFactory();
+		factory.Root = new Nest();
 
 		var cell = new Cell();
 		cell.Init( factory );

@@ -19,14 +19,14 @@ namespace SucoSnake.Core
 	public class CellContentFactory : ICellContentFactory
 	{
 		#region Public Fields
-		public Nest root;
+		public Nest Root;
 		#endregion
 
 		#region Public Members
 		public ICellContent CreateContent( ICell parent )
 		{
 			var content = new CellContent();
-			root.Add( content );
+			Root.Add( content );
 			return content;
 		}
 		#endregion
@@ -35,5 +35,6 @@ namespace SucoSnake.Core
 
 	public class Cell : SquareCell< CellContent >
 	{
+
 	}
 }
