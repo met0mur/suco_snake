@@ -39,6 +39,10 @@ namespace SucoSnake.Core
 		{
 			if (_mode == QueueMode.Sequential)
 			{
+				if (!_queue.Any())
+				{
+					return MoveStepResult.Skipped;
+				}
 				var move = _queue.Peek();
 				while (move != null)
 				{
@@ -46,7 +50,7 @@ namespace SucoSnake.Core
 					if (result != MoveStepResult.Done)
 					{
 						_queue.Dequeue();
-						move = _queue.Peek();
+						move = _queue.Any() ? _queue.Peek() : null;
 					}
 					else
 					{
@@ -55,8 +59,13 @@ namespace SucoSnake.Core
 				}
 				return MoveStepResult.ImmediatelyDone;
 			}
-			else
+			else if(_mode == QueueMode.Parallel)
 			{
+				if( !_list.Any() )
+				{
+					return MoveStepResult.Skipped;
+				}
+
 				foreach (IMove move in _list.ToArray())
 				{
 					var result = move.Step();
@@ -65,9 +74,10 @@ namespace SucoSnake.Core
 						_list.Remove(move);
 					}
 				}
-				return _list.Any() ? MoveStepResult.ImmediatelyDone : MoveStepResult.Done;
+				return _list.Any()  ? MoveStepResult.Done : MoveStepResult.ImmediatelyDone;
 			}
 			
+			return MoveStepResult.Skipped;
 		}
 	}
 }

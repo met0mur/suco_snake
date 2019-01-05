@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SucoSnake.Core
 {
-	//	Move Sequential Scheme
+	//	Sequential Scheme Of Two Step Move
 	//
 	//   |--------------|--------------|<-------------                                         
 	//   |              |              |                                         
@@ -17,8 +17,19 @@ namespace SucoSnake.Core
 	//					|			   |
 	//					First are ended second are started
 	//					               |
-	//								   Second block of work are
-	//								   finished as a Move himself
+	//								   Second block of work finished
+	//								   Starting Next
+	//								   |--------------|--------------|<-------------                                         
+	//								   |              |              |                                         
+	//								   |   Started    |  InProgress  |  FInished                             
+	//								   |_____________________________|<_____________
+	//								   |			  |			     |
+	//								   |			  |			     |
+	//								   First block of work are starded
+	//								   				  |			     |
+	//								   				  First are ended second are started
+	//								   				                 |
+	//								   							     Second block of work are done
 	//
 	//   Move protected methods scheme
 	//   ____________________________________________________________                                         
@@ -124,6 +135,7 @@ namespace SucoSnake.Core
 		public void MarkInQueue()
 		{
 			State = MoveState.InQueue;
+			OnInQueue();
 			_aggregtor.HandleMove(this);
 		}
 
@@ -165,7 +177,7 @@ namespace SucoSnake.Core
 					{
 						state = MoveState.InProgress;
 					}
-					else
+					else if (State != MoveState.InProgress)
 					{
 						state = MoveState.Started;
 					}
@@ -184,7 +196,7 @@ namespace SucoSnake.Core
 					{
 						state = MoveState.InProgress;
 					}
-					else
+					else if (State != MoveState.InProgress)
 					{
 						state = MoveState.Started;
 					}
@@ -193,20 +205,20 @@ namespace SucoSnake.Core
 
 			OnAction();
 
-			if (State == MoveState.Started)
+			if (state == MoveState.Started)
 			{
 				OnStart();
 			}
-			else if (State == MoveState.InProgress)
+			else if (state == MoveState.InProgress)
 			{
 				OnProgress();
 			}
-			else if (State == MoveState.Completed)
+			else if (state == MoveState.Canceled)
 			{
 				OnFinished();
 				OnCanceled();
 			}
-			else if (State == MoveState.Completed)
+			else if (state == MoveState.Completed)
 			{
 				OnFinished();
 				OnCompleted();
@@ -224,6 +236,11 @@ namespace SucoSnake.Core
 		}
 
 		protected virtual void OnAction()
+		{
+
+		}
+
+		protected virtual void OnInQueue()
 		{
 
 		}
