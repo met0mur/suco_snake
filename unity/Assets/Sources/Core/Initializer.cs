@@ -28,11 +28,10 @@ public class TestInitialierController : Controller
 	{
 		base.InternalInit();
 
-		var factory = new CellContentFactory();
+		var factory = new CellsField();
 		factory.Root = new Nest();
 
-		var cell = new Cell();
-		cell.Init( factory );
+		factory.Fill( 10, 10 );
 
 	}
 }

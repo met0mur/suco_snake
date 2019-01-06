@@ -196,10 +196,10 @@ namespace SucoSnake.Core
 			var name = GetName();
 			if( Nest == null )
 			{
-				return "lonely-" + GetName();
+				return "lonely-" + name;
 			}
 
-			return Nest.GetFullName() + "." + GetName();
+			return Nest.GetFullName() + "." + name;
 		}
 		#endregion
 

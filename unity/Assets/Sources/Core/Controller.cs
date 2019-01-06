@@ -30,16 +30,21 @@ namespace SucoSnake.Core
 
 	public class ControllerAggregator : Controller
 	{
+
+		private List<Controller> _list = new List<Controller>();
+
 		public void Add( Controller controller )
 		{
-
+			_list.Add( controller );
 		}
 
 		protected override void InternalInit()
 		{
 			base.InternalInit();
-
+			foreach( var controller in _list )
+			{
+				controller.Init();
+			}
 		}
-
 	}
 }

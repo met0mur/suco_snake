@@ -18,8 +18,8 @@ namespace SucoSnake.Core
 		[ Test ]
 		public void Initial()
 		{
-			var nest = new Nest();
-			var egg = new Egg();
+			new Nest();
+			new Egg();
 		}
 
 		[ Test ]
