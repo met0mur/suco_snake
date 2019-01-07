@@ -99,6 +99,7 @@ namespace SucoSnake.Core
 		public Boo.Lang.List< SpotLink > Links = new Boo.Lang.List< SpotLink >();
 		#endregion
 
+		#region Public Members
 		public void CreateAndInsertLinkWith( Spot spot, Spot between )
 		{
 			if( between == null )
@@ -122,7 +123,6 @@ namespace SucoSnake.Core
 			between.CreateLinkWith( between );
 		}
 
-		#region Public Members
 		public void CreateLinkWith( Spot spot )
 		{
 			if( spot == null )
@@ -171,7 +171,7 @@ namespace SucoSnake.Core
 			return null;
 		}
 
-		public void SwapLinksWith( Spot target, Spot exclude )
+		public void ShiftLinksTo( Spot target, Spot exclude = null )
 		{
 			if( target == null )
 			{
@@ -184,7 +184,7 @@ namespace SucoSnake.Core
 				throw new SpotLinkSwapException();
 			}
 
-			var swapped = new Boo.Lang.List< Spot >();
+			var swapped = new List< Spot >();
 			foreach( var link in Links.ToArray() )
 			{
 				var next = link.GetNext( this );
@@ -205,22 +205,28 @@ namespace SucoSnake.Core
 
 	public class SpotRunner : IEnumerable< Spot >, IEnumerator< Spot >
 	{
+		#region Private Fields
 		private readonly Spot _initialSpot;
 		private Spot _lastSpot;
+		#endregion
 
-		public SpotRunner(Spot spot)
+		#region Properties
+		public Spot Current { get; private set; }
+
+		object IEnumerator.Current { get { return Current; } }
+		#endregion
+
+		#region Constructors
+		public SpotRunner( Spot spot )
 		{
 			_initialSpot = spot;
 		}
+		#endregion
 
+		#region Public Members
 		public IEnumerator< Spot > GetEnumerator()
 		{
 			return this;
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
 		}
 
 		public bool MoveNext()
@@ -234,7 +240,7 @@ namespace SucoSnake.Core
 			foreach( var link in Current.Links )
 			{
 				var next = link.GetNext( Current );
-				if ( next != _lastSpot )
+				if( next != _lastSpot )
 				{
 					_lastSpot = Current;
 					Current = next;
@@ -251,13 +257,17 @@ namespace SucoSnake.Core
 			_lastSpot = null;
 		}
 
-		public Spot Current { get; private set; }
-
-		object IEnumerator.Current { get { return Current; } }
-
 		public void Dispose()
 		{
 			Reset();
 		}
+		#endregion
+
+		#region Interface Implementations
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+		#endregion
 	}
 }
