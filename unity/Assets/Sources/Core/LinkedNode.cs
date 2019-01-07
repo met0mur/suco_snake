@@ -34,7 +34,8 @@ namespace SucoSnake.Core
 		Bottom
 	}
 
-	public class NodeSideRunner< TSidesEnum, TNodeContent > : IEnumerator< LinkedNode< TSidesEnum, TNodeContent > >, IEnumerable<LinkedNode<TSidesEnum, TNodeContent>> where TSidesEnum : struct, IConvertible where TNodeContent : INodeContent
+	public class NodeSideRunner< TSidesEnum, TNodeContent > : IEnumerator< LinkedNode< TSidesEnum, TNodeContent > >, IEnumerable< LinkedNode< TSidesEnum, TNodeContent > >
+		where TSidesEnum : struct, IConvertible where TNodeContent : INodeContent
 	{
 		#region Private Fields
 		private readonly TSidesEnum _side;
@@ -84,25 +85,29 @@ namespace SucoSnake.Core
 		{
 			_currentLinkedNode = null;
 		}
-		#endregion
 
 		public IEnumerator< LinkedNode< TSidesEnum, TNodeContent > > GetEnumerator()
 		{
 			return this;
 		}
+		#endregion
 
+		#region Interface Implementations
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
+		#endregion
 	}
 
-	public class LinkedNode< TSidesEnum, TNodeContentContent > : ILinkedNode where TSidesEnum : struct, IConvertible where TNodeContentContent : INodeContent
+	public class LinkedNode< TSidesEnum, TNodeContent > : ILinkedNode where TSidesEnum : struct, IConvertible where TNodeContent : INodeContent
 	{
-		#region Private Fields
-		private INodeContent _content;
+		#region Protected Fields
+		protected Dictionary< TSidesEnum, LinkedNode< TSidesEnum, TNodeContent > > _nodes = new Dictionary< TSidesEnum, LinkedNode< TSidesEnum, TNodeContent > >();
+		#endregion
 
-		private Dictionary< TSidesEnum, LinkedNode< TSidesEnum, TNodeContentContent > > _nodes = new Dictionary< TSidesEnum, LinkedNode< TSidesEnum, TNodeContentContent > >();
+		#region Private Fields
+		private TNodeContent _content;
 		#endregion
 
 		#region Public Members
@@ -111,28 +116,35 @@ namespace SucoSnake.Core
 			return _nodes.ContainsKey( side );
 		}
 
-		public LinkedNode< TSidesEnum, TNodeContentContent > GetNextNode( TSidesEnum side )
+		public LinkedNode< TSidesEnum, TNodeContent > GetNextNode( TSidesEnum side )
 		{
 			return _nodes[ side ];
 		}
 
-		public void SetNextNode( TSidesEnum side, LinkedNode< TSidesEnum, TNodeContentContent > linkedNode )
+		public virtual void SetNextNode( TSidesEnum side, LinkedNode< TSidesEnum, TNodeContent > linkedNode )
 		{
 			_nodes.Add( side, linkedNode );
 		}
 
-		public IEnumerable< LinkedNode< TSidesEnum, TNodeContentContent > > RunSide( TSidesEnum side )
+		public IEnumerable< LinkedNode< TSidesEnum, TNodeContent > > RunSide( TSidesEnum side )
 		{
-			return new NodeSideRunner< TSidesEnum, TNodeContentContent >( side, this );
+			return new NodeSideRunner< TSidesEnum, TNodeContent >( side, this );
 		}
 
 		public INodeContent Init( INodeContentFactory factory )
 		{
-			_content = factory.CreateContent( this );
+			_content = ( TNodeContent ) factory.CreateContent( this );
 			return _content;
 		}
 
-		public INodeContent GetContent()
+		public TNodeContent GetContent()
+		{
+			return _content;
+		}
+		#endregion
+
+		#region Interface Implementations
+		INodeContent ILinkedNode.GetContent()
 		{
 			return _content;
 		}

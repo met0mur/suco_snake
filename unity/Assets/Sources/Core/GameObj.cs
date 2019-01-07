@@ -1,4 +1,6 @@
-﻿namespace SucoSnake.Core
+﻿using System.Security.Cryptography;
+
+namespace SucoSnake.Core
 {
 	public class NodeContent : Nest, INodeContent
 	{
@@ -85,6 +87,14 @@
 		#region Public Fields
 		public int X;
 		public int Y;
+
+		public Spot Spot { get; private set; }
+
+		public void SetSpot(Spot spot)
+		{
+			Spot = spot;
+			GetContent().Add( spot );
+		}
 		#endregion
 	}
 }
