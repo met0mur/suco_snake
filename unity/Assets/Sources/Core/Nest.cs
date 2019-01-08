@@ -114,8 +114,10 @@ namespace SucoSnake.Core
 			}
 
 			_eggs.Remove( egg );
-			egg.SetNest( nest );
+			nest._eggs.Add( egg );
 			egg.Knock -= EggOnKnock;
+			egg.Knock += nest.EggOnKnock;
+			egg.SetNest( nest );
 		}
 
 		public void Remove< T >() where T : Egg
@@ -186,7 +188,7 @@ namespace SucoSnake.Core
 			InvokeKnock( new NestEggEventArgs { Self = this, Type = type, From = lastNest, To = nest, Bubble = true } );
 		}
 
-		public string GetName()
+		public virtual string GetName()
 		{
 			return Name ?? GetType().Name;
 		}

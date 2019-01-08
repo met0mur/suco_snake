@@ -37,6 +37,15 @@ namespace SucoSnake.Core
 	{
 	}
 
+	public class SpotSetInCellException : SpotException
+	{
+		#region Constructors
+		public SpotSetInCellException( string message = null ) : base( message )
+		{
+		}
+		#endregion
+	}
+
 	public class SpotLink
 	{
 		#region Public Fields
@@ -96,7 +105,18 @@ namespace SucoSnake.Core
 	public class Spot : Nest
 	{
 		#region Public Fields
-		public Boo.Lang.List< SpotLink > Links = new Boo.Lang.List< SpotLink >();
+		public List< SpotLink > Links = new List< SpotLink >();
+		#endregion
+
+		#region Private Fields
+		private static int COUNTER;
+		#endregion
+
+		#region Constructors
+		public Spot()
+		{
+			Name = "Spot-" + COUNTER++;
+		}
 		#endregion
 
 		#region Public Members
@@ -120,7 +140,7 @@ namespace SucoSnake.Core
 
 			CreateLinkWith( spot );
 			targetLink.Delete();
-			between.CreateLinkWith( between );
+			between.CreateLinkWith( spot );
 		}
 
 		public void CreateLinkWith( Spot spot )

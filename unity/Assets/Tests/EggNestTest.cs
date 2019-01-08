@@ -67,6 +67,7 @@ namespace SucoSnake.Core
 			nest.Add( egg );
 			nest.MoveTo( egg, nest2 );
 			Assert.True( flag );
+			Assert.IsNotNull( nest2.GetNested<TestEgg>() );
 		}
 
 		[ Test ]

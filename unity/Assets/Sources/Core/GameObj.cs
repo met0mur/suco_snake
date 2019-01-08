@@ -1,17 +1,17 @@
-﻿using System.Security.Cryptography;
+﻿using Assets.Sources.Core;
 
 namespace SucoSnake.Core
 {
 	public class NodeContent : Nest, INodeContent
 	{
 		#region Properties
-		public ILinkedNode Parent { get; private set; }
+		public Cell Parent { get; private set; }
 		#endregion
 
 		#region Public Members
 		public void SetParentNode( ILinkedNode parent )
 		{
-			Parent = parent;
+			Parent = ( Cell ) parent;
 		}
 		#endregion
 	}
@@ -23,7 +23,7 @@ namespace SucoSnake.Core
 	public class CellsField : INodeContentFactory
 	{
 		#region Public Fields
-		public Nest Root = new Nest();
+		public Nest Root = new Nest { Name = "root" };
 		#endregion
 
 		#region Private Fields
@@ -61,6 +61,7 @@ namespace SucoSnake.Core
 					var cell = CreateCell();
 					cell.X = x;
 					cell.Y = y;
+					cell.GetContent().Name = cell.GetContent().GetType().Name + "-" + x + ":" + y;
 					list[ x, y ] = cell;
 					if( y > 0 )
 					{
@@ -87,13 +88,41 @@ namespace SucoSnake.Core
 		#region Public Fields
 		public int X;
 		public int Y;
+		#endregion
 
+		#region Properties
 		public Spot Spot { get; private set; }
+		#endregion
 
-		public void SetSpot(Spot spot)
+		#region Public Members
+		public void SetSpot( Spot spot )
 		{
+			if (Spot != null && Spot == spot)
+			{
+				throw new SpotSetInCellException("Cant set same spot: " + Spot.GetFullName());
+			}
+
+			if ( Spot != null )
+			{
+				throw new SpotSetInCellException("Spot already setted: " + Spot.GetFullName() + ". New spot:" + spot.GetFullName());
+			}
+
+			var content = GetContent();
+			if( spot != null )
+			{
+				if( spot.HaveCell() )
+				{
+					var lastCell = spot.GetCell();
+					lastCell.Spot = null;
+					spot.Nest.MoveTo( spot, content );
+				}
+				else
+				{
+					content.Add( spot );
+				}
+			}
+
 			Spot = spot;
-			GetContent().Add( spot );
 		}
 		#endregion
 	}

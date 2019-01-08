@@ -79,6 +79,7 @@ namespace SucoSnake.Core
 
 	public class Move : IMove, IMoveHandlersAggregator
 	{
+
 		private readonly MoveHandlersAggregator _aggregtor = new MoveHandlersAggregator();
 		private bool _cancelRequested;
 		private bool _finishRequested;
